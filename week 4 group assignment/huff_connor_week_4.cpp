@@ -63,6 +63,9 @@ int main() {
 		}
 	}
 	file.close();
+	std::cout << "--------------------------------------" << std::endl;
+	std::cout << "Check complete. Press Enter to exit." << std::flush;
+	std::cin.get(); // <-- This will wait for the user to press a key to exit
 
 	return 0;
 }
