@@ -5,9 +5,9 @@
 #include <algorithm>
 
 int main() {
-	std::ifstream dictionaryFile("/usr/share/dict/words");
+	std::ifstream dictionaryFile("words");
 	if (!dictionaryFile) {
-		std::cerr << "Error operating dictionary file." << std::endl; 
+		std::cerr << "Error operating dictionary." << std::endl; 
 		return 1;
 	}
 
@@ -19,9 +19,10 @@ int main() {
 	}
 	dictionaryFile.close();
 
-	std::string fileToCheck = "file_to_check.txt";
+	std::string fileToCheck = "input";
 	//replace this with the file path that you would like to check
-	std::ifstream file(filetocheck); //once again replace with checked faile
+	
+	std::ifstream file(fileToCheck); //once again replace with checked faile
 	if (!file) {
 		std::cerr << "Error opening file to check." << std::endl;
 		return 1;
