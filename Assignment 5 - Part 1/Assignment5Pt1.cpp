@@ -25,7 +25,7 @@ then opens the input file being checked, it will read the input file word by wor
 
 int main() {
 	
-	//lines 15 and 16 load the dictionary into a vector
+
 	std::cout << "Loading the dictionary, please hold. " << std::endl;
 	std::ifstream dictionaryFile("words");
 
