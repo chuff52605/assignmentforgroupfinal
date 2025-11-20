@@ -18,36 +18,49 @@
 
 using namespace std;
 
-// ENCRYPTS A FILE BY SHIFITING EACH CHARACTER FORWARD BY K
-void encrypt_file(ifstream& in, ofstream& out, int k)
-{
-    char ch;
-    while (in.get(ch)) // READ EACH CHARACTER FROM THE INPUT FILE
-        {
-        out.put(ch + k); // WRITE THE CHRACTER TO THE OUTPUT FILE
-        }
-}
-// DECRYPTS A FILE BY SHIFITNG EACH CHARACTER BACKWARD BY K
-void decrypt_file(ifstream& in, ofstream& out, int k)
-{
-    char ch;
-    while (in.get(ch)) // READ EACH CHARACTER FROM THE INPUT FILE
-        {
-        out.put(ch - k); // WRITE THE CHRACTER TO THE OUTPUT FILE
-        }
+// SHIFT ONLY LETTERS
+char shift_letter(char ch, int k) {
+    
+    if (ch >= 'A' && ch <= 'Z') {
+        return 'A' + (ch - 'A' + k + 26) % 26;
+    }
+    
+    else if (ch >= 'a' && ch <= 'z') {
+        return 'a' + (ch - 'a' + k + 26) % 26;
+    }
+    
+    return ch; //KEEPS ALL NON LETTER CHARACTERS THE SAME
 }
 
-int main()
-{
+// ENCRYPTS A FILE BY SHIFITING EACH CHARACTER FORWARD BY K
+void encrypt_file(ifstream& in, ofstream& out, int k) {
+    char ch;
+    while (in.get(ch)) // READ EACH CHARACTER FROM THE INPUT FILE
+        { 
+        out.put(shift_letter(ch, k)); // WRITE THE CHRACTER TO THE OUTPUT FILE
+        }
+ 
+}
+
+// DECRYPTS A FILE BY SHIFITNG EACH CHARACTER BACKWARD BY K
+void decrypt_file(ifstream& in, ofstream& out, int k) {
+    char ch;
+    while (in.get(ch)) // READ EACH CHARACTER FROM THE INPUT FILE
+        {
+        out.put(shift_letter(ch, -k)); // WRITE THE CHRACTER TO THE OUTPUT FILE
+        }
+
+}
+
+int main() {
+
     string mode; // STORES WHETHER THE END USER WANTS TI ENCRYPT OR DECRYPT
     int key; // SHIFT AMOUNT USED FOR CAESAR CIPHER
-    string input;
-    string output;
-
+    
     // ASK END USER FOR MODE (ENC/DEC)
-    cout << "Mode: " << endl;
+    cout << "Mode: " << endl; 
     cin >> mode;
-
+    
     // ASK END USER FOR SHIFT KEY
     cout << "Shift: " << endl;
     cin >> key;
@@ -57,15 +70,15 @@ int main()
     ofstream out_file("output.txt");
 
     // IF END USER CHOSE ENCRYPTION, CALL THE ENCRYPT FUNCTION
-    if (mode == "encrypt")
-        {
+    if (mode == "encrypt") {
         encrypt_file(in_file, out_file, key);
-        }
-
+         }
+    
     // IF END USER CHOSE DYCRYPTION, CALL THE DECRYPT FUNCTION
-    if (mode == "decrypt")
-        {
+    if (mode == "decrypt") { 
         decrypt_file(in_file, out_file, key);
-        }
+            }
+
     return 0;
+  
 }
