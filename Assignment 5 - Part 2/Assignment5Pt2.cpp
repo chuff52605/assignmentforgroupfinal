@@ -18,67 +18,96 @@
 
 using namespace std;
 
-// SHIFT ONLY LETTERS
-char shift_letter(char ch, int k) {
-    
-    if (ch >= 'A' && ch <= 'Z') {
-        return 'A' + (ch - 'A' + k + 26) % 26;
+/*
+ * SHIFT A SINGLE LETTER BY "K" POSITIONS (CIPHER), AND WRAPS AROUND WITHIN
+ * "A-Z" OR "a-z". IT ALSO PRESERVES CASE.  NON-LETTER CHARACTERS ARE RETURNED UNCHANGED.
+ */
+
+char shift_letter(char c, int k)
+{
+    // NORMALIZE SHIFT OR VERY LARGE OR NEGATIVE SHIFTS WILL WORK.
+    k = ((k % 26)+ 26) % 26;
+
+    if (c >= 'A' && c <= 'Z')
+    {
+        char base ='A';
+        return char (base + ((c - base + k) % 26));
     }
-    
-    else if (ch >= 'a' && ch <= 'z') {
-        return 'a' + (ch - 'a' + k + 26) % 26;
+    else if (c >= 'a' && c <= 'z')
+    {
+        char base = 'a';
+        return char (base + ((c - base + k) % 26));
     }
-    
-    return ch; //KEEPS ALL NON LETTER CHARACTERS THE SAME
+    else
+    {
+        // NON-LETTER: LEAVE CHANGED
+        return c;
+    }
 }
 
-// ENCRYPTS A FILE BY SHIFITING EACH CHARACTER FORWARD BY K
-void encrypt_file(ifstream& in, ofstream& out, int k) {
-    char ch;
-    while (in.get(ch)) // READ EACH CHARACTER FROM THE INPUT FILE
-        { 
-        out.put(shift_letter(ch, k)); // WRITE THE CHRACTER TO THE OUTPUT FILE
-        }
- 
-}
-
-// DECRYPTS A FILE BY SHIFITNG EACH CHARACTER BACKWARD BY K
-void decrypt_file(ifstream& in, ofstream& out, int k) {
+// ENCRYPTS A FILE BY SHIFTING EACH CHARACTER FORWARD BY K
+void encrypt_file (ifstream& in, ofstream& out, int k)
+{
     char ch;
     while (in.get(ch)) // READ EACH CHARACTER FROM THE INPUT FILE
         {
-        out.put(shift_letter(ch, -k)); // WRITE THE CHRACTER TO THE OUTPUT FILE
+            out.put(shift_letter(ch, k)); // WRITE THE SHIFTED CHARACTER TO THE OUTPUT FILE
         }
-
 }
 
-int main() {
+// DECRYPTS A FILE BY SHIFTING EACH CHARACTER BACKWARD BY K
+void decrypt_file(ifstream& in, ofstream& out, int k)
+{
+    char ch;
+    while (in.get(ch)) // READ EACH CHARACTER FROM THE INPUT FILE
+        {
+        out.put(ch - k); // WRITE THE CHARACTER TO THE OUTPUT FILE
+        }
+}
 
+int main()
+{
     string mode; // STORES WHETHER THE END USER WANTS TI ENCRYPT OR DECRYPT
     int key; // SHIFT AMOUNT USED FOR CAESAR CIPHER
-    
+
+
     // ASK END USER FOR MODE (ENC/DEC)
-    cout << "Mode: " << endl; 
+    cout << "Enter Mode (encrypt/decrypt): ";
     cin >> mode;
-    
+
     // ASK END USER FOR SHIFT KEY
-    cout << "Shift: " << endl;
+    cout << "Enter a Shift Value (integer): ";
     cin >> key;
 
-    // OPEN INPUT AND OUTPUT FILES
+    /* OPEN INPUT AND OUTPUT FILES + ERROR MSGS!
+     *"cerr" is basically the same as "cout" but for error messages. I saw it in a Youtube video.
+     */
+
     ifstream in_file("input.txt");
+    if (!in_file)
+        {
+            cerr << "Error in opening input file!" << endl;
+        }
+
     ofstream out_file("output.txt");
+    if (!out_file)
+        {
+        cerr << "Error in opening output fil!e" << endl;
+        }
 
-    // IF END USER CHOSE ENCRYPTION, CALL THE ENCRYPT FUNCTION
-    if (mode == "encrypt") {
-        encrypt_file(in_file, out_file, key);
-         }
-    
-    // IF END USER CHOSE DYCRYPTION, CALL THE DECRYPT FUNCTION
-    if (mode == "decrypt") { 
+    // CHOOSING THE MODE MODE: ENCRYPT or DECRYPT
+    if (mode == "encrypt")
+        {
+            encrypt_file(in_file, out_file, key);
+        }
+    else if (mode == "decrypt")
+        {
         decrypt_file(in_file, out_file, key);
-            }
-
+        }
+    else
+        {
+        cerr << "Error! Please type 'encrypt' or decrypt' to continue!" << endl;
+        return 1;
+        }
     return 0;
-  
 }
